@@ -1,0 +1,252 @@
+.addNew {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #1a5276;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  img.main {
+    position: absolute;
+    left: 50%;
+    top: 22%;
+    width: 48px;
+    padding: 16px;
+    filter: invert(100%);
+    transform: translate(-50%, -50%);
+    border: 2px solid black;
+    border-radius: 50%;
+  }
+
+  .navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    padding-top: 8px;
+    box-sizing: border-box;
+
+    h1 {
+      margin: 0;
+      color: white;
+      font-weight: lighter;
+      font-size: 1.4em;
+      padding-bottom: 8px;
+    }
+
+    img {
+      margin: 0;
+      filter: invert(100%);
+    }
+  }
+
+  form {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    input,
+    textarea {
+      padding: 8px 16px;
+      width: 100%;
+      box-sizing: border-box;
+      height: 48px;
+      margin: 8px 0;
+      border: none;
+    }
+
+    textarea {
+      resize: none;
+      height: 72px;
+    }
+
+    input[type="submit"] {
+      background: #3498db;
+      color: white;
+    }
+  }
+}
+
+.header {
+  background: orange;
+  height: 168px;
+  background-image: url("header.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+
+  > img {
+    filter: invert(100%);
+    position: absolute;
+    top: 16px;
+    left: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-weight: lighter;
+    color: white;
+    position: absolute;
+    left: 16px;
+    bottom: 48px;
+  }
+
+  .date {
+    position: absolute;
+    bottom: 16px;
+    margin: 0;
+    left: 16px;
+    color: white;
+  }
+
+  .info {
+    background: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    width: 45%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .percent {
+      color: white;
+      position: absolute;
+      bottom: 16px;
+      margin: 0;
+      right: 16px;
+    }
+
+    div {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      flex-direction: column;
+      margin: 8px;
+
+      h2 {
+        color: white;
+        margin: 0;
+        font-weight: normal;
+        font-size: 1.4em;
+      }
+
+      p {
+        color: white;
+        margin-bottom: 0;
+        margin-top: 0px;
+        font-weight: lighter;
+        font-size: 0.7em;
+      }
+    }
+  }
+}
+
+body {
+  background: lightgrey;
+  overflow-y: scroll;
+
+  &.toggle {
+    .addNew {
+      display: flex;
+    }
+  }
+}
+
+div.app {
+  background: white;
+  width: 100%;
+  overflow-x: hidden;
+
+  button.add {
+    background: #27ae60;
+    border-radius: 50%;
+    height: 56px;
+    width: 56px;
+    border: none;
+    margin: 0;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10;
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
+
+    img {
+      filter: invert(100%);
+      min-width: 24px;
+      min-height: 24px;
+    }
+  }
+}
+
+.AllTasks {
+  > h1 {
+    font-size: 1.4em;
+    margin: 16px;
+    font-weight: normal;
+  }
+}
+
+div.Task {
+  width: calc(100% - 32px);
+  padding: 16px 0;
+  margin: 0 16px;
+  border-bottom: 1px solid lightgrey;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+
+  & > div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+
+    h1 {
+      margin: 0;
+      margin-bottom: 6px;
+      padding: 0;
+      font-size: 1em;
+      color: #222;
+      font-weight: bold;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  img {
+    margin: 6px;
+    margin-left: 0;
+    margin-right: 16px;
+    filter: invert(60%);
+  }
+}
+
+div.Task img.completed {
+  filter: invert(37%) sepia(74%) saturate(434%) hue-rotate(93deg) brightness(94%) contrast(93%);
+}
