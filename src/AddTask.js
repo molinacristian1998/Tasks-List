@@ -1,33 +1,20 @@
-import React, { useState } from "react";
-import { SET_CONTACTS } from "./actions";
+import React from "react";
 
-const body = document.body.classList;
-
-const useTasks = () => {
-  const [task, setTask] = useState();
-
-  return { task };
-};
-
-function AddTask() {
-  dispatch({ type: SET_CONTACTS, payload: response.data });
-
+function AddTask({ onSubmit, title }) {
   return (
-    <div className="addNew">
+    <form className="addNew" onSubmit={onSubmit}>
       <div className="navbar">
-        <img onClick={() => (body.contains("toggle") ? body.remove("toggle") : body.add("toggle"))} src="../arrow_back-24px.svg" />
+        <img onClick={() => document.body.classList.remove("toggle")} src="../arrow_back-24px.svg" alt="" />
         <h1>Agregar tarea</h1>
-        <img src="../tune-24px.svg" />
+        <img src="../tune-24px.svg" alt="fakealt" />
       </div>
 
-      <img className="main" src="../create-24px.svg" />
+      <img className="main" src="../create-24px.svg" alt="fakealt" />
 
-      <form>
-        <input id="form-title" type="text" placeholder="Task Title"></input>
-        <textarea id="form-description" placeholder="Task Description"></textarea>
-        <input type="submit" id="cuack" value="Agregar Tarea"></input>
-      </form>
-    </div>
+      <input onChange={(e) => (title = e.target.value)} type="text" placeholder="Título"></input>
+      <textarea id="form-description" placeholder="Descripción"></textarea>
+      <input type="submit" id="cuack" value="Agregar Tarea"></input>
+    </form>
   );
 }
 

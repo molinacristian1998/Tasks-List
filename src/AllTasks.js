@@ -1,25 +1,52 @@
-import React, { useState } from "react";
+import React from "react";
 import Task from "./Task";
 
-const remainingTasks = (elem) => {
-  let tasks = elem;
-  let remaining = elem.map((elem) => <Task key={elem.id} id={elem.id} info={elem} />);
-  return <div className="TaskContainer">{remaining}</div>;
-};
-
 const completedTasks = (elem) => {
-  let tasks = elem;
   let completed = elem.map((elem) => <Task key={elem.id} id={elem.id} info={elem} />);
   return <div className="TaskContainer">{completed}</div>;
 };
 
-function AllTasks(props) {
-  let tasks = props.tasks;
+function AllTasks({ remaining, completed, onRemoveTask, onCompleteTask }) {
+  var newId = 0;
+
+  //
+
+  //
+
+  const onClick = (e) => {
+    newId = e.target.parentElement.parentElement.id;
+    document.querySelectorAll(".AllTasks")[0].id = newId;
+  };
+
+  const onComplete = (e) => {
+    newId = e.target.parentElement.parentElement.id;
+    document.querySelectorAll(".AllTasks")[0].id = newId;
+  };
+
+  const remainingTasks = (elem) => {
+    let remaining = elem.map((elem) => <Task key={elem.id} id={elem.id} info={elem} />);
+    return (
+      <div className="TaskContainer" onComplete={(e) => onComplete(e)} onClick={(e) => onClick(e)}>
+        {remaining}
+      </div>
+    );
+  };
+
   return (
-    <div className="AllTasks">
-      <div className="TaskContainer">{remainingTasks(props.remaining)}</div>
-      <h1>Completados</h1>
-      <div className="TaskContainer">{completedTasks(props.completed)}</div>
+    <div
+      className="AllTasks"
+      onClick={(e) => {
+        onRemoveTask(e);
+        onCompleteTask(e);
+      }}
+      id={newId}
+    >
+      <div className="TaskContainer">{remainingTasks(remaining)}</div>
+      <div className="CompletedHeader">
+        <h1>Completados ({completed.length})</h1>
+        <p>Borrar Completados</p>
+      </div>
+      <div className="TaskContainer">{completedTasks(completed)}</div>
     </div>
   );
 }
