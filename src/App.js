@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import AddTask from "./AddTask";
 import Header from "./Header";
+import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
 import FocusTask from "./FocusTask";
 import Button from "./Button";
@@ -11,41 +11,27 @@ const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
 
   const addTask = (event) => {
-    let var_title = event.target.querySelectorAll("input")[0].value;
-    let var_description = event.target.querySelectorAll("textarea")[0].value;
-    if (!var_description) {
-      var_description = "";
-    }
-    if (!var_title) {
-      var_title = "";
-    }
+    let array = getInputs(event);
 
-    event.target.querySelectorAll("input")[0].value = "";
-    event.target.querySelectorAll("textarea")[0].value = "";
-    document.body.classList.remove("toggle");
-    var newvar = {
-      id: Date.now(),
-      title: var_title,
-      description: var_description,
-      completed: false,
-    };
+    clearInputs(event);
 
-    let concat = task.concat(newvar);
-    setTask(concat);
+    createTask(array, task, setTask);
 
     event.preventDefault();
   };
 
-  const completeTask = (event) => {
-    let id = event.target.parentElement.id;
+  const completeTask = (id) => {
+    console.log("completeTask");
 
-    for (let index = 0; index < tasks.length; index++) {
-      if (task[index].id === id && task[index].completed === false) {
-        task[index].completed = true;
-      } else if (task[index].id === id && task[index].completed === true) {
-        task[index].completed = false;
+    const handleComplete = (task, thisid) => {
+      for (let i = 0; i < tasks.length; i++) {
+        if (task[i].id === thisid) {
+          task[i].completed ? (task[i].completed = false) : (task[i].completed = true);
+        }
       }
-    }
+    };
+
+    handleComplete(task, Number(id));
   };
 
   const deleteTask = (event) => {
@@ -59,6 +45,51 @@ const useTasks = (tasks) => {
 
   return { task, addTask, deleteTask, completeTask };
 };
+//
+
+//
+
+//
+
+//
+
+const getInputs = (event) => {
+  let var_title = event.target.querySelectorAll("input")[0].value;
+  let var_description = event.target.querySelectorAll("textarea")[0].value;
+  if (!var_description) {
+    var_description = "";
+  }
+  if (!var_title) {
+    var_title = "";
+  }
+
+  let array = [var_title, var_description];
+  return array;
+};
+
+const createTask = ({ title, description }, task, setTask) => {
+  var newvar = {
+    id: Date.now(),
+    title: title,
+    description: description,
+    completed: false,
+  };
+
+  let concat = task.concat(newvar);
+  setTask(concat);
+};
+
+const clearInputs = (event) => {
+  event.target.querySelectorAll("input")[0].value = "";
+  event.target.querySelectorAllevent.target.parentElement.id("textarea")[0].value = "";
+  document.body.classList.remove("toggle");
+};
+
+//
+
+//
+
+//
 
 function App() {
   // se conserva un initialState de las tareas por si hay algún error
@@ -88,7 +119,13 @@ function App() {
       <FocusTask />
 
       {localTask[0] ? (
-        <AllTasks onRemoveTask={(e) => deleteTask(e)} onCompleteTask={(e) => completeTask(e)} completed={completed_tasks} remaining={remaining_tasks} />
+        <AllTasks
+          onRemoveTask={(e) => deleteTask(e)}
+          task={task}
+          onCompleteTask={(id) => completeTask(id)}
+          completed={completed_tasks}
+          remaining={remaining_tasks}
+        />
       ) : (
         <div className="noTasks">
           <p>Todavía no hay tareas</p>

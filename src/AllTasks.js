@@ -1,15 +1,30 @@
 import React from "react";
 import Task from "./Task";
 
-const completedTasks = (elem) => {
-  let completed = elem.map((elem) => <Task key={elem.id} id={elem.id} info={elem} />);
-  return <div className="TaskContainer">{completed}</div>;
-};
-
 function AllTasks({ remaining, completed, onRemoveTask, onCompleteTask }) {
   var newId = 0;
 
   //
+
+  const mapTask = (elem) => <Task key={elem.id} id={elem.id} info={elem} onComplete={(e) => thisAsk(e)} />;
+
+  const completedTasks = (elem) => {
+    let completed = elem.map((elem) => mapTask(elem));
+    return <div className="TaskContainer">{completed}</div>;
+  };
+
+  const remainingTasks = (elem) => {
+    let remaining = elem.map((elem) => mapTask(elem));
+    return (
+      <div className="TaskContainer" onClick={(e) => onClick(e)}>
+        {remaining}
+      </div>
+    );
+  };
+
+  const thisAsk = (event) => {
+    onCompleteTask(event.target.parentElement.id);
+  };
 
   //
 
@@ -18,26 +33,11 @@ function AllTasks({ remaining, completed, onRemoveTask, onCompleteTask }) {
     document.querySelectorAll(".AllTasks")[0].id = newId;
   };
 
-  const onComplete = (e) => {
-    newId = e.target.parentElement.parentElement.id;
-    document.querySelectorAll(".AllTasks")[0].id = newId;
-  };
-
-  const remainingTasks = (elem) => {
-    let remaining = elem.map((elem) => <Task key={elem.id} id={elem.id} info={elem} />);
-    return (
-      <div className="TaskContainer" onComplete={(e) => onComplete(e)} onClick={(e) => onClick(e)}>
-        {remaining}
-      </div>
-    );
-  };
-
   return (
     <div
       className="AllTasks"
       onClick={(e) => {
         onRemoveTask(e);
-        onCompleteTask(e);
       }}
       id={newId}
     >
