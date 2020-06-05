@@ -1,25 +1,25 @@
 import React from "react";
 import Task from "./Task";
 
-function AllTasks({ remaining, completed, onRemoveTask, onCompleteTask }) {
+function AllTasks({ task, onRemoveTask, onOpenTask, onCompleteTask, onDeleteCompleted }) {
   var newId = 0;
 
   //
 
-  const mapTask = (elem) => <Task key={elem.id} id={elem.id} info={elem} onComplete={(e) => thisAsk(e)} />;
+  console.log(task);
+
+  const mapTask = (elem) => <Task key={elem.id} id={elem.id} info={elem} onComplete={(e) => thisAsk(e)} onOpen={(e) => openTask(e)} />;
 
   const completedTasks = (elem) => {
-    let completed = elem.map((elem) => mapTask(elem));
+    let result = elem.filter((x) => x.completed === true);
+    let completed = result.map((elem) => mapTask(elem));
     return <div className="TaskContainer">{completed}</div>;
   };
 
   const remainingTasks = (elem) => {
-    let remaining = elem.map((elem) => mapTask(elem));
-    return (
-      <div className="TaskContainer" onClick={(e) => onClick(e)}>
-        {remaining}
-      </div>
-    );
+    let result = elem.filter((x) => x.completed === false);
+    let remaining = result.map((elem) => mapTask(elem));
+    return <div className="TaskContainer">{remaining}</div>;
   };
 
   const thisAsk = (event) => {
@@ -28,9 +28,8 @@ function AllTasks({ remaining, completed, onRemoveTask, onCompleteTask }) {
 
   //
 
-  const onClick = (e) => {
-    newId = e.target.parentElement.parentElement.id;
-    document.querySelectorAll(".AllTasks")[0].id = newId;
+  const openTask = (id) => {
+    onOpenTask(id);
   };
 
   return (
@@ -41,12 +40,12 @@ function AllTasks({ remaining, completed, onRemoveTask, onCompleteTask }) {
       }}
       id={newId}
     >
-      <div className="TaskContainer">{remainingTasks(remaining)}</div>
+      <div className="TaskContainer">{remainingTasks(task)}</div>
       <div className="CompletedHeader">
-        <h1>Completados ({completed.length})</h1>
-        <p>Borrar Completados</p>
+        <h1>Completados ({completedTasks.length})</h1>
+        <p onClick={() => onDeleteCompleted()}>Borrar Completados</p>
       </div>
-      <div className="TaskContainer">{completedTasks(completed)}</div>
+      <div className="TaskContainer">{completedTasks(task)}</div>
     </div>
   );
 }

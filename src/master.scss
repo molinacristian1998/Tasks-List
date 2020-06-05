@@ -264,6 +264,11 @@ div.Task img.completed {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 4px 16px;
+
+  h1 {
+    font-size: 1.2em;
+  }
 }
 
 .FocusTask {

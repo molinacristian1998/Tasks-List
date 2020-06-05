@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
@@ -12,36 +12,40 @@ const useTasks = (tasks) => {
 
   const addTask = (event) => {
     let array = getInputs(event);
-
     clearInputs(event);
-
     createTask(array, task, setTask);
-
     event.preventDefault();
   };
 
   const completeTask = (id) => {
-    console.log("completeTask");
-
-    const handleComplete = (task, thisid) => {
-      for (let i = 0; i < tasks.length; i++) {
-        if (task[i].id === thisid) {
-          task[i].completed ? (task[i].completed = false) : (task[i].completed = true);
-        }
+    id = Number(id);
+    const handleComplete = (task, slctId) => {
+      if (task.id === slctId) {
+        task.completed = !task.completed;
       }
+      return task;
     };
-
-    handleComplete(task, Number(id));
+    let completed = task.map((task) => handleComplete(task, id));
+    setTask(completed);
   };
 
-  const deleteTask = (event) => {
-    let id = event.target.parentElement.parentElement.id;
-
-    let result = task.filter((x) => x.id !== id);
-    setTask(result);
-
-    //event.preventDefault();
+  const deleteTask = (dltCase) => {
+    switch (dltCase) {
+      case "DELETE_TASK":
+        break;
+      case "DELETE_COMPLETED":
+        let result = task.filter((x) => x.completed === false);
+        setTask(result);
+        localStorage.setItem("tasks", JSON.stringify(result));
+        break;
+      default:
+        console.warn("No se seleccionó case");
+    }
   };
+
+  useEffect(() => {
+    console.log("Updated");
+  });
 
   return { task, addTask, deleteTask, completeTask };
 };
@@ -62,8 +66,7 @@ const getInputs = (event) => {
   if (!var_title) {
     var_title = "";
   }
-
-  let array = [var_title, var_description];
+  let array = { title: var_title, description: var_description };
   return array;
 };
 
@@ -74,14 +77,13 @@ const createTask = ({ title, description }, task, setTask) => {
     description: description,
     completed: false,
   };
-
   let concat = task.concat(newvar);
   setTask(concat);
 };
 
 const clearInputs = (event) => {
   event.target.querySelectorAll("input")[0].value = "";
-  event.target.querySelectorAllevent.target.parentElement.id("textarea")[0].value = "";
+  event.target.querySelectorAll("textarea")[0].value = "";
   document.body.classList.remove("toggle");
 };
 
@@ -93,6 +95,20 @@ const clearInputs = (event) => {
 
 function App() {
   // se conserva un initialState de las tareas por si hay algún error
+
+  var focusTask;
+
+  var oneTask;
+
+  const OpenTask = (id) => {
+    oneTask = Object.values(task).filter((x) => x.id === id);
+    oneTask = oneTask[0];
+
+    focusTask = (oneTask) => {
+      return `<FocusTask task={oneTask} />`;
+    };
+  };
+
   const initialState = {
     folder: "Mis Tareas",
     tasks: [],
@@ -108,23 +124,31 @@ function App() {
   // se suben las tareas filtradas
   localStorage.setItem("tasks", JSON.stringify(task));
 
+  //
+
+  const DeleteCompleted = () => {
+    deleteTask("DELETE_COMPLETED");
+  };
+
+  //
+
   return (
     <div className="app">
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
-
       <Header folder={initialState.folder} task={task} completed_tasks={completed_tasks} />
 
+      {focusTask}
+
       <AddTask onSubmit={(e) => addTask(e)} />
-
-      <FocusTask />
-
       {localTask[0] ? (
         <AllTasks
-          onRemoveTask={(e) => deleteTask(e)}
           task={task}
+          onRemoveTask={(e) => deleteTask(e)}
           onCompleteTask={(id) => completeTask(id)}
-          completed={completed_tasks}
-          remaining={remaining_tasks}
+          onDeleteCompleted={() => DeleteCompleted()}
+          onOpenTask={(id) => {
+            OpenTask(id);
+          }}
         />
       ) : (
         <div className="noTasks">
