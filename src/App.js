@@ -40,6 +40,7 @@ const useTasks = (tasks) => {
       case "DELETE_TASK":
         let filtered = task.filter((x) => x.id !== open.id);
         setTask(filtered);
+        setOpen(0);
         break;
       case "DELETE_COMPLETED":
         let result = task.filter((x) => x.completed === false);

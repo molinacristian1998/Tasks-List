@@ -277,8 +277,7 @@ div.Task img.completed {
   position: fixed;
   top: 0;
   left: 0;
-  padding: 16px;
-  background: orange;
+  background: white;
   z-index: 99;
   display: none;
 
@@ -286,8 +285,24 @@ div.Task img.completed {
     display: block;
   }
 
-  button {
-    background: green;
+  .head {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    button {
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  .text {
+    padding: 16px;
+
+    h1 {
+      font-size: 1.4em;
+    }
   }
 }
 
