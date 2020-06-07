@@ -278,6 +278,11 @@ div.Task img.completed {
   top: 0;
   left: 0;
   padding: 16px;
+  background: orange;
+
+  button {
+    background: blue;
+  }
 }
 
 aside#aside-menu {

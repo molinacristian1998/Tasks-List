@@ -1,10 +1,13 @@
 import React from "react";
 
-function FocusTask({ task }) {
+function FocusTask(open) {
+
+  var { id, title, description, completed } = open.open;
+
   return (
-    <div>
-      <h1>{task.title}</h1>
-      <p>{task.description}</p>
+    <div className="FocusTask">
+      <h1>{title}</h1>
+      <p>{description}</p>
       <button>Delete</button>
     </div>
   );

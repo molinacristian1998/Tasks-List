@@ -6,9 +6,15 @@ import FocusTask from "./FocusTask";
 import Button from "./Button";
 import "./master.min.css";
 
-// useState de las tareas
+//
+
+//
+
+//
+
 const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
+  const [open, setOpen] = useState(1);
 
   const addTask = (event) => {
     let array = getInputs(event);
@@ -43,27 +49,18 @@ const useTasks = (tasks) => {
     }
   };
 
-  useEffect(() => {
-    // Actualiza el título del documento usando la API del navegador
-    console.log("useEffect");
-  });
-
   const openTask = (id) => {
     let oneTask = Object.values(task).filter((x) => x.id === id);
-    oneTask = oneTask[0];
-
-    var returned;
-
-    if (oneTask) {
-      returned = <FocusTask task={oneTask} />;
-    } else {
-      returned = null;
-    }
-    return returned;
+    oneTask = oneTask[0];    
+    setOpen(oneTask);
   };
 
-  return { task, addTask, deleteTask, completeTask, openTask };
+  return { task, open, addTask, deleteTask, completeTask, openTask };
 };
+
+//
+
+//
 
 //
 
@@ -100,33 +97,26 @@ const clearInputs = (event) => {
 //
 
 function App() {
-  // se conserva un initialState de las tareas por si hay algún error
-
-  var selectedId = undefined;
-
-  const selectId = (id) => {
-    selectedId = id;
-  };
-
   const initialState = {
     folder: "Mis Tareas",
     tasks: [],
   };
-  // se obtiene localStorage.tasks
   var localTask = JSON.parse(localStorage.getItem("tasks"));
 
   // usan de primer estado localStorage.tasks
-  const { task, addTask, deleteTask, completeTask, openTask } = useTasks(localTask);
+  const { task, open, addTask, deleteTask, completeTask, openTask } = useTasks(localTask);
   // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true);
   // se suben las tareas filtradas
   localStorage.setItem("tasks", JSON.stringify(task));
 
-  //
-
   const DeleteCompleted = () => {
     deleteTask("DELETE_COMPLETED");
   };
+
+  //
+
+  //
 
   //
 
@@ -135,7 +125,7 @@ function App() {
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={initialState.folder} task={task} completed_tasks={completed_tasks} />
 
-      {openTask(selectedId)}
+      <FocusTask open={open} />
 
       <AddTask onSubmit={(e) => addTask(e)} />
       {localTask[0] ? (
@@ -145,7 +135,7 @@ function App() {
           onCompleteTask={(id) => completeTask(id)}
           onDeleteCompleted={() => DeleteCompleted()}
           onOpenTask={(id) => {
-            selectId(id);
+            openTask(id);
           }}
         />
       ) : (
