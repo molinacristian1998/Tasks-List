@@ -1,10 +1,10 @@
 import React from "react";
 
-function FocusTask({ title, description }) {
+function FocusTask({ task }) {
   return (
     <div>
-      <h1>{title}</h1>
-      <p>{description}</p>
+      <h1>{task.title}</h1>
+      <p>{task.description}</p>
       <button>Delete</button>
     </div>
   );

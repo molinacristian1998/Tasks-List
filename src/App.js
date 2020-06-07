@@ -44,40 +44,46 @@ const useTasks = (tasks) => {
   };
 
   useEffect(() => {
-    console.log("Updated");
+    // Actualiza el título del documento usando la API del navegador
+    console.log("useEffect");
   });
 
-  return { task, addTask, deleteTask, completeTask };
+  const openTask = (id) => {
+    let oneTask = Object.values(task).filter((x) => x.id === id);
+    oneTask = oneTask[0];
+
+    var returned;
+
+    if (oneTask) {
+      returned = <FocusTask task={oneTask} />;
+    } else {
+      returned = null;
+    }
+    return returned;
+  };
+
+  return { task, addTask, deleteTask, completeTask, openTask };
 };
-//
-
-//
-
-//
 
 //
 
 const getInputs = (event) => {
-  let var_title = event.target.querySelectorAll("input")[0].value;
-  let var_description = event.target.querySelectorAll("textarea")[0].value;
-  if (!var_description) {
-    var_description = "";
-  }
-  if (!var_title) {
-    var_title = "";
-  }
-  let array = { title: var_title, description: var_description };
+  let title = event.target.querySelectorAll("input")[0].value;
+  let description = event.target.querySelectorAll("textarea")[0].value;
+  title = title ? title : "";
+  description = description ? description : "";
+  let array = { title: title, description: description };
   return array;
 };
 
 const createTask = ({ title, description }, task, setTask) => {
-  var newvar = {
+  let newTask = {
     id: Date.now(),
     title: title,
     description: description,
     completed: false,
   };
-  let concat = task.concat(newvar);
+  let concat = task.concat(newTask);
   setTask(concat);
 };
 
@@ -96,17 +102,10 @@ const clearInputs = (event) => {
 function App() {
   // se conserva un initialState de las tareas por si hay algún error
 
-  var focusTask;
+  var selectedId = undefined;
 
-  var oneTask;
-
-  const OpenTask = (id) => {
-    oneTask = Object.values(task).filter((x) => x.id === id);
-    oneTask = oneTask[0];
-
-    focusTask = (oneTask) => {
-      return `<FocusTask task={oneTask} />`;
-    };
+  const selectId = (id) => {
+    selectedId = id;
   };
 
   const initialState = {
@@ -117,10 +116,9 @@ function App() {
   var localTask = JSON.parse(localStorage.getItem("tasks"));
 
   // usan de primer estado localStorage.tasks
-  const { task, addTask, deleteTask, completeTask } = useTasks(localTask);
+  const { task, addTask, deleteTask, completeTask, openTask } = useTasks(localTask);
   // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true);
-  var remaining_tasks = Object.values(task).filter((x) => x.completed === false);
   // se suben las tareas filtradas
   localStorage.setItem("tasks", JSON.stringify(task));
 
@@ -137,7 +135,7 @@ function App() {
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={initialState.folder} task={task} completed_tasks={completed_tasks} />
 
-      {focusTask}
+      {openTask(selectedId)}
 
       <AddTask onSubmit={(e) => addTask(e)} />
       {localTask[0] ? (
@@ -147,7 +145,7 @@ function App() {
           onCompleteTask={(id) => completeTask(id)}
           onDeleteCompleted={() => DeleteCompleted()}
           onOpenTask={(id) => {
-            OpenTask(id);
+            selectId(id);
           }}
         />
       ) : (

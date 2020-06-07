@@ -1,8 +1,6 @@
 import React from "react";
 
 function Task({ id, info, onOpen, onComplete }) {
-  console.log(info);
-
   return (
     <div id={id} className="Task">
       <img
