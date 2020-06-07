@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
@@ -14,7 +14,7 @@ import "./master.min.css";
 
 const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
-  const [open, setOpen] = useState(1);
+  const [open, setOpen] = useState(0);
 
   const addTask = (event) => {
     let array = getInputs(event);
@@ -38,6 +38,8 @@ const useTasks = (tasks) => {
   const deleteTask = (dltCase) => {
     switch (dltCase) {
       case "DELETE_TASK":
+        let filtered = task.filter((x) => x.id !== open.id);
+        setTask(filtered);
         break;
       case "DELETE_COMPLETED":
         let result = task.filter((x) => x.completed === false);
@@ -51,11 +53,15 @@ const useTasks = (tasks) => {
 
   const openTask = (id) => {
     let oneTask = Object.values(task).filter((x) => x.id === id);
-    oneTask = oneTask[0];    
+    oneTask = oneTask[0];
     setOpen(oneTask);
   };
 
-  return { task, open, addTask, deleteTask, completeTask, openTask };
+  const closeTask = () => {
+    setOpen(0);
+  };
+
+  return { task, open, addTask, deleteTask, completeTask, openTask, closeTask };
 };
 
 //
@@ -104,7 +110,7 @@ function App() {
   var localTask = JSON.parse(localStorage.getItem("tasks"));
 
   // usan de primer estado localStorage.tasks
-  const { task, open, addTask, deleteTask, completeTask, openTask } = useTasks(localTask);
+  const { task, open, addTask, deleteTask, completeTask, openTask, closeTask } = useTasks(localTask);
   // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true);
   // se suben las tareas filtradas
@@ -112,6 +118,10 @@ function App() {
 
   const DeleteCompleted = () => {
     deleteTask("DELETE_COMPLETED");
+  };
+
+  const deleteThis = () => {
+    deleteTask("DELETE_TASK");
   };
 
   //
@@ -125,7 +135,7 @@ function App() {
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={initialState.folder} task={task} completed_tasks={completed_tasks} />
 
-      <FocusTask open={open} />
+      <FocusTask open={open} onBack={() => closeTask()} onDelete={() => deleteThis()} />
 
       <AddTask onSubmit={(e) => addTask(e)} />
       {localTask[0] ? (
