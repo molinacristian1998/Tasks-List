@@ -1,6 +1,6 @@
 import React from "react";
 
-function AddTask({ onSubmit, title }) {
+function AddTask({ onSubmit, title, folder }) {
   return (
     <form className="addNew" onSubmit={onSubmit}>
       <div className="navbar">
@@ -10,7 +10,7 @@ function AddTask({ onSubmit, title }) {
       </div>
 
       <img className="main" src="../create-24px.svg" alt="fakealt" />
-
+      <p>Carpeta: {folder.name}</p>
       <input onChange={(e) => (title = e.target.value)} type="text" placeholder="Título"></input>
       <textarea id="form-description" placeholder="Descripción"></textarea>
       <input type="submit" id="cuack" value="Agregar Tarea"></input>

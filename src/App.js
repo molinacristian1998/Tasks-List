@@ -12,14 +12,21 @@ import "./master.min.css";
 
 //
 
+const useFolders = (folders) => {
+  const [folder, setFolder] = useState(folders);
+  const [selectedFolder, setSelectedFolder] = useState(folders[0]);
+
+  return { folder, selectedFolder };
+};
+
 const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
   const [open, setOpen] = useState(0);
 
-  const addTask = (event) => {
+  const addTask = (event, folder) => {
     let array = getInputs(event);
     clearInputs(event);
-    createTask(array, task, setTask);
+    createTask(array, task, setTask, folder);
     event.preventDefault();
   };
 
@@ -62,7 +69,16 @@ const useTasks = (tasks) => {
     setOpen(0);
   };
 
-  return { task, open, addTask, deleteTask, completeTask, openTask, closeTask };
+  const renameTitle = (value, id) => {
+    const mapTitle = (task, value, id) => {
+      task.id === id ? (task.title = value) : (task.title = task.title);
+      return task;
+    };
+    let renamed = task.map((task) => mapTitle(task, value, id));
+    setTask(renamed);
+  };
+
+  return { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle };
 };
 
 //
@@ -80,12 +96,13 @@ const getInputs = (event) => {
   return array;
 };
 
-const createTask = ({ title, description }, task, setTask) => {
+const createTask = ({ title, description }, task, setTask, folder) => {
   let newTask = {
     id: Date.now(),
     title: title,
     description: description,
     completed: false,
+    folder: folder,
   };
   let concat = task.concat(newTask);
   setTask(concat);
@@ -105,13 +122,20 @@ const clearInputs = (event) => {
 
 function App() {
   const initialState = {
-    folder: "Mis Tareas",
+    folder: [
+      { id: 1591637105929, name: "Mis Tareas", default: true },
+      { id: 1591637136738, name: "Programación", default: false },
+    ],
     tasks: [],
   };
   var localTask = JSON.parse(localStorage.getItem("tasks"));
+  var localFolder = JSON.parse(localStorage.getItem("folder"));
+
+  localStorage.setItem("folder", JSON.stringify(initialState.folder));
 
   // usan de primer estado localStorage.tasks
-  const { task, open, addTask, deleteTask, completeTask, openTask, closeTask } = useTasks(localTask);
+  const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
+  const { folder, selectedFolder } = useFolders(localFolder);
   // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true);
   // se suben las tareas filtradas
@@ -134,11 +158,17 @@ function App() {
   return (
     <div className="app">
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
-      <Header folder={initialState.folder} task={task} completed_tasks={completed_tasks} />
+      <Header folder={selectedFolder.name} task={task} completed_tasks={completed_tasks} />
 
-      <FocusTask open={open} onBack={() => closeTask()} onDelete={() => deleteThis()} />
+      <FocusTask
+        open={open}
+        allfolder={folder}
+        onBack={() => closeTask()}
+        onTitleChange={(value, id) => renameTitle(value, id)}
+        onDelete={() => deleteThis()}
+      />
 
-      <AddTask onSubmit={(e) => addTask(e)} />
+      <AddTask onSubmit={(e) => addTask(e, selectedFolder.id)} folder={selectedFolder} />
       {localTask[0] ? (
         <AllTasks
           task={task}
