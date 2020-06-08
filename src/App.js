@@ -133,6 +133,17 @@ function App() {
 
   localStorage.setItem("folder", JSON.stringify(initialState.folder));
 
+  if (!localTask) {
+    localStorage.setItem("tasks", JSON.stringify(initialState.tasks));
+  }
+
+  const isTrue = (t) => {
+    var response = !t ? false : true;
+    return response;
+  };
+
+  console.log(isTrue(localTask));
+
   // usan de primer estado localStorage.tasks
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
   const { folder, selectedFolder } = useFolders(localFolder);
