@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
@@ -6,9 +6,15 @@ import FocusTask from "./FocusTask";
 import Button from "./Button";
 import "./master.min.css";
 
-// useState de las tareas
+//
+
+//
+
+//
+
 const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
+  const [open, setOpen] = useState(0);
 
   const addTask = (event) => {
     let array = getInputs(event);
@@ -32,6 +38,9 @@ const useTasks = (tasks) => {
   const deleteTask = (dltCase) => {
     switch (dltCase) {
       case "DELETE_TASK":
+        let filtered = task.filter((x) => x.id !== open.id);
+        setTask(filtered);
+        setOpen(0);
         break;
       case "DELETE_COMPLETED":
         let result = task.filter((x) => x.completed === false);
@@ -43,27 +52,22 @@ const useTasks = (tasks) => {
     }
   };
 
-  useEffect(() => {
-    // Actualiza el título del documento usando la API del navegador
-    console.log("useEffect");
-  });
-
   const openTask = (id) => {
     let oneTask = Object.values(task).filter((x) => x.id === id);
     oneTask = oneTask[0];
-
-    var returned;
-
-    if (oneTask) {
-      returned = <FocusTask task={oneTask} />;
-    } else {
-      returned = null;
-    }
-    return returned;
+    setOpen(oneTask);
   };
 
-  return { task, addTask, deleteTask, completeTask, openTask };
+  const closeTask = () => {
+    setOpen(0);
+  };
+
+  return { task, open, addTask, deleteTask, completeTask, openTask, closeTask };
 };
+
+//
+
+//
 
 //
 
@@ -100,33 +104,30 @@ const clearInputs = (event) => {
 //
 
 function App() {
-  // se conserva un initialState de las tareas por si hay algún error
-
-  var selectedId = undefined;
-
-  const selectId = (id) => {
-    selectedId = id;
-  };
-
   const initialState = {
     folder: "Mis Tareas",
     tasks: [],
   };
-  // se obtiene localStorage.tasks
   var localTask = JSON.parse(localStorage.getItem("tasks"));
 
   // usan de primer estado localStorage.tasks
-  const { task, addTask, deleteTask, completeTask, openTask } = useTasks(localTask);
+  const { task, open, addTask, deleteTask, completeTask, openTask, closeTask } = useTasks(localTask);
   // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true);
   // se suben las tareas filtradas
   localStorage.setItem("tasks", JSON.stringify(task));
 
-  //
-
   const DeleteCompleted = () => {
     deleteTask("DELETE_COMPLETED");
   };
+
+  const deleteThis = () => {
+    deleteTask("DELETE_TASK");
+  };
+
+  //
+
+  //
 
   //
 
@@ -135,7 +136,7 @@ function App() {
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={initialState.folder} task={task} completed_tasks={completed_tasks} />
 
-      {openTask(selectedId)}
+      <FocusTask open={open} onBack={() => closeTask()} onDelete={() => deleteThis()} />
 
       <AddTask onSubmit={(e) => addTask(e)} />
       {localTask[0] ? (
@@ -145,7 +146,7 @@ function App() {
           onCompleteTask={(id) => completeTask(id)}
           onDeleteCompleted={() => DeleteCompleted()}
           onOpenTask={(id) => {
-            selectId(id);
+            openTask(id);
           }}
         />
       ) : (

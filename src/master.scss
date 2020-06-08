@@ -271,13 +271,39 @@ div.Task img.completed {
   }
 }
 
-.FocusTask {
+#FocusTask {
   width: 100%;
   height: 100%;
   position: fixed;
   top: 0;
   left: 0;
-  padding: 16px;
+  background: white;
+  z-index: 99;
+  display: none;
+
+  &.toggle {
+    display: block;
+  }
+
+  .head {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    button {
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  .text {
+    padding: 16px;
+
+    h1 {
+      font-size: 1.4em;
+    }
+  }
 }
 
 aside#aside-menu {
