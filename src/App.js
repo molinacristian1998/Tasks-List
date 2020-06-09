@@ -3,6 +3,7 @@ import Header from "./Header";
 import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
 import FocusTask from "./FocusTask";
+import FolderList from "./FolderList";
 import Button from "./Button";
 import "./master.min.css";
 
@@ -10,13 +11,18 @@ import "./master.min.css";
 
 //
 
-//
-
 const useFolders = (folders) => {
-  const [folder, setFolder] = useState(folders);
-  const [selectedFolder, setSelectedFolder] = useState(folders[0]);
+  const [folder /*, setFolder*/] = useState(folders);
+  const [selectedFolder, setSelectedFolder] = useState(folders[1]);
 
-  return { folder, selectedFolder };
+  const selectFolder = (e) => {
+    let id = Number(e.target.id);
+    let filtered = folder.filter((x) => x.id === id);
+    let toObject = filtered[0];
+    setSelectedFolder(toObject);
+  };
+
+  return { folder, selectedFolder, selectFolder };
 };
 
 const useTasks = (tasks) => {
@@ -71,7 +77,9 @@ const useTasks = (tasks) => {
 
   const renameTitle = (value, id) => {
     const mapTitle = (task, value, id) => {
-      task.id === id ? (task.title = value) : (task.title = task.title);
+      if (task.id === id) {
+        task.title = value;
+      }
       return task;
     };
     let renamed = task.map((task) => mapTitle(task, value, id));
@@ -80,8 +88,6 @@ const useTasks = (tasks) => {
 
   return { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle };
 };
-
-//
 
 //
 
@@ -118,23 +124,24 @@ const clearInputs = (event) => {
 
 //
 
-//
-
 function App() {
   const initialState = {
     folder: [
       { id: 1591637105929, name: "Mis Tareas", default: true },
       { id: 1591637136738, name: "Programación", default: false },
+      { id: 1591664121142, name: "Task List", default: false },
     ],
     tasks: [],
   };
   var localTask = JSON.parse(localStorage.getItem("tasks"));
   var localFolder = JSON.parse(localStorage.getItem("folder"));
 
-  localStorage.setItem("folder", JSON.stringify(initialState.folder));
-
   if (!localTask) {
     localStorage.setItem("tasks", JSON.stringify(initialState.tasks));
+  }
+
+  if (!localFolder) {
+    localStorage.setItem("folder", JSON.stringify(initialState.folder));
   }
 
   const isTrue = (t) => {
@@ -142,11 +149,9 @@ function App() {
     return response;
   };
 
-  console.log(isTrue(localTask));
-
   // usan de primer estado localStorage.tasks
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
-  const { folder, selectedFolder } = useFolders(localFolder);
+  const { folder, selectedFolder, selectFolder } = useFolders(localFolder);
   // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true);
   // se suben las tareas filtradas
@@ -164,12 +169,12 @@ function App() {
 
   //
 
-  //
-
   return (
     <div className="app">
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={selectedFolder.name} task={task} completed_tasks={completed_tasks} />
+
+      <FolderList folder={folder} onSelectFolder={(id) => selectFolder(id)} />
 
       <FocusTask
         open={open}
@@ -183,6 +188,7 @@ function App() {
       {localTask[0] ? (
         <AllTasks
           task={task}
+          selectedFolder={selectedFolder}
           onRemoveTask={(e) => deleteTask(e)}
           onCompleteTask={(id) => completeTask(id)}
           onDeleteCompleted={() => DeleteCompleted()}

@@ -10,7 +10,6 @@ function FocusTask({ open, allfolder, onBack, onDelete, onTitleChange }) {
 
   if (folder) {
     var folderName = filterFolder(folder, allfolder).name;
-    console.log(folderName);
   }
 
   const changeTitle = (e) => {

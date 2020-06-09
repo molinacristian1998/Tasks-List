@@ -1,7 +1,9 @@
 import React from "react";
 import Task from "./Task";
 
-function AllTasks({ task, onRemoveTask, onOpenTask, onCompleteTask, onDeleteCompleted }) {
+function AllTasks({ task, selectedFolder, onRemoveTask, onOpenTask, onCompleteTask, onDeleteCompleted }) {
+  task = task.filter((x) => x.folder === selectedFolder.id);
+
   const countRemaining = (task) => {
     let completed = task.filter((x) => x.completed === true);
     let count = completed.length;

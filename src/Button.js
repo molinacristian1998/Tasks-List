@@ -4,7 +4,6 @@ const switchFunct = (expr) => {
   switch (expr) {
     case "toggleAdd":
       document.body.classList.add("toggle");
-      console.log("hi");
       break;
     default:
       console.err("switch Error");
