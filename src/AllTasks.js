@@ -15,7 +15,7 @@ function AllTasks({ task, selectedFolder, onRemoveTask, onOpenTask, onCompleteTa
   const completedTasks = (elem) => {
     let result = elem.filter((x) => x.completed === true);
     let completed = result.map((elem) => mapTask(elem));
-    return <div className="TaskContainer">{completed}</div>;
+    return <div className="TaskContainer Completed">{completed}</div>;
   };
 
   const remainingTasks = (elem) => {

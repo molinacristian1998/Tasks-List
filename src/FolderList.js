@@ -1,15 +1,24 @@
 import React from "react";
 
-function FolderList({ folder, onSelectFolder }) {
-  const { id } = folder;
+function FolderList({ folder, selectedFolder, onSelectFolder }) {
+  var selectedId = selectedFolder.id;
 
   var listMap = folder.map(({ id, name }) => (
-    <div id={id} key={id} onClick={(e) => onSelectFolder(e)}>
+    <div className={id === selectedId ? "selected" : ""} id={id} key={id} onClick={(e) => onSelectFolder(e)}>
       {name}
     </div>
   ));
 
-  return <div>{listMap}</div>;
+  return (
+    <div>
+      <div id="FolderList">
+        {listMap}
+
+        <div className="NewFolder">Nueva Carpeta</div>
+      </div>
+      <div id="overlay"></div>
+    </div>
+  );
 }
 
 export default FolderList;

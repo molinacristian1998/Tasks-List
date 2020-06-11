@@ -3,6 +3,10 @@
   padding: 24px;
 }
 
+.Completed {
+  text-decoration: line-through;
+}
+
 .addNew {
   width: 100%;
   height: 100%;
@@ -28,7 +32,6 @@
     border: 2px solid black;
     border-radius: 50%;
   }
-
   .rounded-btn {
     position: absolute;
     left: 50%;
@@ -165,7 +168,7 @@
 }
 
 body {
-  background: lightgrey;
+  background: white;
   overflow-y: scroll;
 
   &.toggle {
@@ -303,6 +306,16 @@ div.Task img.completed {
     h1 {
       font-size: 1.4em;
     }
+
+    input {
+      border: none;
+      font-size: 1.6em;
+      font-weight: bold;
+
+      &:focus {
+        outline: 0;
+      }
+    }
   }
 }
 
@@ -388,4 +401,58 @@ body.menu #overlay {
 }
 body.menu aside#aside-menu {
   margin-left: -256px;
+}
+
+#FolderList {
+  background: white;
+  z-index: 40;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-height: 300px;
+  margin-bottom: -320px;
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+  box-sizing: border-box;
+  -webkit-box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.8);
+  transition: 0.4s;
+
+  &.toggle {
+    margin-bottom: 0;
+
+    & + #overlay {
+      display: block !important;
+    }
+  }
+
+  div {
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+
+    &.selected {
+      color: #154360;
+      background: #ebf5fb;
+    }
+
+    &.NewFolder {
+      color: #fff;
+      background: #2874a6;
+      margin-top: 16px;
+    }
+  }
+}
+
+#overlay {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  position: fixed;
+  background: black;
+  z-index: 30;
+  opacity: 0.6;
+  display: none;
 }

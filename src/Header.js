@@ -6,13 +6,27 @@ var months = ["Ene", "Feb", "Marzo", "Abril", "Mayo", "Jun", "Jul", "Agos", "Sep
 var date = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 
 function Header({ folder, task, completed_tasks }) {
+  //
+
+  const showFList = () => {
+    let doc = document.getElementById("FolderList");
+    doc.classList.add("toggle");
+  };
+
   var percent = parseInt((completed_tasks.length / task.length) * 100);
+
+  const filterByFolder = (task) => ({ id }) => {
+    let filtered = task.filter((x) => x.folder === id);
+    return filtered;
+  };
+
+  task = filterByFolder(task)(folder);
 
   return (
     <div className="header">
-      <img src="../sort-24px.svg" alt="" />
+      <img onClick={() => showFList()} src="../sort-24px.svg" alt="" />
 
-      <h1>{folder}</h1>
+      <h1>{folder.name}</h1>
 
       <p className="date">{date}</p>
 

@@ -20,6 +20,7 @@ const useFolders = (folders) => {
     let filtered = folder.filter((x) => x.id === id);
     let toObject = filtered[0];
     setSelectedFolder(toObject);
+    document.getElementById("FolderList").classList.remove("toggle");
   };
 
   return { folder, selectedFolder, selectFolder };
@@ -126,6 +127,7 @@ const clearInputs = (event) => {
 
 function App() {
   const initialState = {
+    // Respaldo del localfolder
     folder: [
       { id: 1591637105929, name: "Mis Tareas", default: true },
       { id: 1591637136738, name: "Programación", default: false },
@@ -133,6 +135,21 @@ function App() {
     ],
     tasks: [],
   };
+
+  //
+
+  //
+
+  /* task_folder = taskByFolder(task, selectedFolder);
+
+  const taskByFolder = (task, folder) => {
+    conso
+  } */
+
+  //
+
+  //
+
   var localTask = JSON.parse(localStorage.getItem("tasks"));
   var localFolder = JSON.parse(localStorage.getItem("folder"));
 
@@ -144,16 +161,12 @@ function App() {
     localStorage.setItem("folder", JSON.stringify(initialState.folder));
   }
 
-  const isTrue = (t) => {
-    var response = !t ? false : true;
-    return response;
-  };
-
   // usan de primer estado localStorage.tasks
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
   const { folder, selectedFolder, selectFolder } = useFolders(localFolder);
   // se dividen las completadas de las pendientes
-  var completed_tasks = Object.values(task).filter((x) => x.completed === true);
+  var completed_tasks = Object.values(task).filter((x) => x.completed === true && x.folder === selectedFolder.id);
+
   // se suben las tareas filtradas
   localStorage.setItem("tasks", JSON.stringify(task));
 
@@ -172,9 +185,9 @@ function App() {
   return (
     <div className="app">
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
-      <Header folder={selectedFolder.name} task={task} completed_tasks={completed_tasks} />
+      <Header folder={selectedFolder} task={task} completed_tasks={completed_tasks} />
 
-      <FolderList folder={folder} onSelectFolder={(id) => selectFolder(id)} />
+      <FolderList folder={folder} selectedFolder={selectedFolder} onSelectFolder={(id) => selectFolder(id)} />
 
       <FocusTask
         open={open}

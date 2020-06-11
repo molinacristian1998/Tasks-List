@@ -28,9 +28,8 @@ function FocusTask({ open, allfolder, onBack, onDelete, onTitleChange }) {
       </div>
 
       <div className="text">
-        <h1>{title}</h1>
-        <p>Carpeta: {folder ? folderName : "Sin carpeta"}</p>
         <input type="text" value={title} onChange={(e) => changeTitle(e.target.value)} />
+        <p>Carpeta: {folder ? folderName : "Sin carpeta"}</p>
 
         <p>{description}</p>
         <p>{completed ? "completado" : "incompleto"}</p>
