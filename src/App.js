@@ -11,9 +11,9 @@ import "./master.min.css";
 
 //
 
-const useFolders = (folders) => {
-  const [folder /*, setFolder*/] = useState(folders);
-  const [selectedFolder, setSelectedFolder] = useState(folders[1]);
+const useFolders = (localFolders) => {
+  const [folder /*, setFolder*/] = useState(localFolders);
+  const [selectedFolder, setSelectedFolder] = useState(localFolders[2]);
 
   const selectFolder = (e) => {
     let id = Number(e.target.id);
@@ -128,11 +128,7 @@ const clearInputs = (event) => {
 function App() {
   const initialState = {
     // Respaldo del localfolder
-    folder: [
-      { id: 1591637105929, name: "Mis Tareas", default: true },
-      { id: 1591637136738, name: "Programación", default: false },
-      { id: 1591664121142, name: "Task List", default: false },
-    ],
+    folder: [],
     tasks: [],
   };
 
@@ -180,6 +176,14 @@ function App() {
 
   //
 
+  const filterByFolder = (task) => ({ id }) => {
+    let filtered = task.filter((x) => x.folder === id);
+    return filtered;
+  };
+  const folder_task = filterByFolder(task)(selectedFolder);
+
+  console.log(folder_task);
+
   //
 
   return (
@@ -198,7 +202,7 @@ function App() {
       />
 
       <AddTask onSubmit={(e) => addTask(e, selectedFolder.id)} folder={selectedFolder} />
-      {localTask[0] ? (
+      {folder_task[0] ? (
         <AllTasks
           task={task}
           selectedFolder={selectedFolder}
@@ -211,7 +215,9 @@ function App() {
         />
       ) : (
         <div className="noTasks">
-          <p>Todavía no hay tareas</p>
+          <h1>Todavía no hay tareas</h1>
+          <p>¿Qué esperas para agregar una? La puta que te parió.</p>
+          <img src="../assets/img/blank_canvas.svg" alt="No tasks illustration" />
         </div>
       )}
     </div>

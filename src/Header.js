@@ -7,6 +7,12 @@ var date = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 
 function Header({ folder, task, completed_tasks }) {
   //
+  const filterByFolder = (task) => ({ id }) => {
+    let filtered = task.filter((x) => x.folder === id);
+    return filtered;
+  };
+
+  task = filterByFolder(task)(folder);
 
   const showFList = () => {
     let doc = document.getElementById("FolderList");
@@ -14,13 +20,6 @@ function Header({ folder, task, completed_tasks }) {
   };
 
   var percent = parseInt((completed_tasks.length / task.length) * 100);
-
-  const filterByFolder = (task) => ({ id }) => {
-    let filtered = task.filter((x) => x.folder === id);
-    return filtered;
-  };
-
-  task = filterByFolder(task)(folder);
 
   return (
     <div className="header">
@@ -31,16 +30,12 @@ function Header({ folder, task, completed_tasks }) {
       <p className="date">{date}</p>
 
       <div className="info">
-        <div>
-          <h2>{task.length}</h2>
-          <p>Tareas</p>
-        </div>
-        <div>
-          <h2>{completed_tasks.length}</h2>
-          <p>Completadas</p>
-        </div>
-
-        <p className="percent">{percent}% hecho</p>
+        <p className="percent">
+          {completed_tasks.length} de {task.length} tareas completadas
+          <div id="completed-bar">
+            <span style={{ width: percent + "%" }}></span>
+          </div>
+        </p>
       </div>
     </div>
   );

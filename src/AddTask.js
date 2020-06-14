@@ -9,7 +9,6 @@ function AddTask({ onSubmit, title, folder }) {
         <img src="../tune-24px.svg" alt="fakealt" />
       </div>
 
-      <img className="main" src="../create-24px.svg" alt="fakealt" />
       <p>Carpeta: {folder.name}</p>
       <input onChange={(e) => (title = e.target.value)} type="text" placeholder="Título"></input>
       <textarea id="form-description" placeholder="Descripción"></textarea>

@@ -10,8 +10,7 @@ function Task({ id, info, onOpen, onComplete }) {
         alt="icon"
       />
       <div onClick={(e) => onOpen(id)}>
-        <h1>{info.title}</h1>
-        <p>{info.description}</p>
+        <p>{info.title}</p>
       </div>
     </div>
   );
