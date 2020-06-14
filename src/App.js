@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
@@ -6,10 +6,6 @@ import FocusTask from "./FocusTask";
 import FolderList from "./FolderList";
 import Button from "./Button";
 import "./master.min.css";
-
-//
-
-//
 
 const useFolders = (localFolders) => {
   const [folder /*, setFolder*/] = useState(localFolders);
@@ -22,7 +18,6 @@ const useFolders = (localFolders) => {
     setSelectedFolder(toObject);
     document.getElementById("FolderList").classList.remove("toggle");
   };
-
   return { folder, selectedFolder, selectFolder };
 };
 
@@ -127,24 +122,14 @@ const clearInputs = (event) => {
 
 function App() {
   const initialState = {
-    // Respaldo del localfolder
     folder: [],
     tasks: [],
   };
 
-  //
-
-  //
-
-  /* task_folder = taskByFolder(task, selectedFolder);
-
-  const taskByFolder = (task, folder) => {
-    conso
-  } */
-
-  //
-
-  //
+  useEffect(() => {
+    console.log("useEffect");
+    localStorage.setItem("tasks", JSON.stringify(task));
+  });
 
   var localTask = JSON.parse(localStorage.getItem("tasks"));
   var localFolder = JSON.parse(localStorage.getItem("folder"));
@@ -152,19 +137,13 @@ function App() {
   if (!localTask) {
     localStorage.setItem("tasks", JSON.stringify(initialState.tasks));
   }
-
   if (!localFolder) {
     localStorage.setItem("folder", JSON.stringify(initialState.folder));
   }
 
-  // usan de primer estado localStorage.tasks
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
   const { folder, selectedFolder, selectFolder } = useFolders(localFolder);
-  // se dividen las completadas de las pendientes
   var completed_tasks = Object.values(task).filter((x) => x.completed === true && x.folder === selectedFolder.id);
-
-  // se suben las tareas filtradas
-  localStorage.setItem("tasks", JSON.stringify(task));
 
   const DeleteCompleted = () => {
     deleteTask("DELETE_COMPLETED");
@@ -181,8 +160,6 @@ function App() {
     return filtered;
   };
   const folder_task = filterByFolder(task)(selectedFolder);
-
-  console.log(folder_task);
 
   //
 
