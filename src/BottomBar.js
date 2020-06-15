@@ -2,8 +2,8 @@ import React from "react";
 
 function BottomBar({ folder, task, completed_tasks }) {
   const showFList = () => {
-    let doc = document.getElementById("FolderList");
-    doc.classList.add("toggle");
+    document.getElementById("FolderList").classList.add("toggle");
+    document.body.classList.add("overlay");
   };
 
   return (

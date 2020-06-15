@@ -8,9 +8,9 @@ import FolderList from "./FolderList";
 import BottomBar from "./BottomBar";
 import "./master.min.css";
 
-const useFolders = (localFolders) => {
+const useFolders = (localFolders, localSelectedFolder) => {
   const [folder /*, setFolder*/] = useState(localFolders);
-  const [selectedFolder, setSelectedFolder] = useState(localFolders[2]);
+  const [selectedFolder, setSelectedFolder] = useState(localSelectedFolder);
 
   const selectFolder = (e) => {
     let id = Number(e.target.id);
@@ -18,6 +18,7 @@ const useFolders = (localFolders) => {
     let toObject = filtered[0];
     setSelectedFolder(toObject);
     document.getElementById("FolderList").classList.remove("toggle");
+    document.body.classList.remove("overlay");
   };
 
   return { folder, selectedFolder, selectFolder };
@@ -27,11 +28,11 @@ const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
   const [open, setOpen] = useState(0);
 
-  const addTask = (event, folder) => {
-    let array = getInputs(event);
-    clearInputs(event);
-    createTask(array, task, setTask, folder);
-    event.preventDefault();
+  const addTask = (titleInput, folder) => {
+    let title = titleInput;
+    createTask(title, task, setTask, folder);
+    document.body.classList.remove("toggle");
+    document.body.classList.remove("overlay");
   };
 
   const completeTask = (id) => {
@@ -67,6 +68,7 @@ const useTasks = (tasks) => {
     let oneTask = Object.values(task).filter((x) => x.id === id);
     oneTask = oneTask[0];
     setOpen(oneTask);
+    document.getElementById("Rename-Input").focus();
   };
 
   const closeTask = () => {
@@ -91,31 +93,15 @@ const useTasks = (tasks) => {
 
 //
 
-const getInputs = (event) => {
-  let title = event.target.querySelectorAll("input")[0].value;
-  let description = event.target.querySelectorAll("textarea")[0].value;
-  title = title ? title : "";
-  description = description ? description : "";
-  let array = { title: title, description: description };
-  return array;
-};
-
-const createTask = ({ title, description }, task, setTask, folder) => {
+const createTask = (title, task, setTask, folder) => {
   let newTask = {
     id: Date.now(),
     title: title,
-    description: description,
     completed: false,
     folder: folder,
   };
   let concat = task.concat(newTask);
   setTask(concat);
-};
-
-const clearInputs = (event) => {
-  event.target.querySelectorAll("input")[0].value = "";
-  event.target.querySelectorAll("textarea")[0].value = "";
-  document.body.classList.remove("toggle");
 };
 
 //
@@ -130,10 +116,12 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(task));
+    localStorage.setItem("selectedFolder", JSON.stringify(selectedFolder));
   });
 
   var localTask = JSON.parse(localStorage.getItem("tasks"));
   var localFolder = JSON.parse(localStorage.getItem("folder"));
+  var localSelectedFolder = JSON.parse(localStorage.getItem("selectedFolder"));
 
   if (!localTask) {
     localStorage.setItem("tasks", JSON.stringify(initialState.tasks));
@@ -143,7 +131,7 @@ function App() {
   }
 
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
-  const { folder, selectedFolder, selectFolder } = useFolders(localFolder);
+  const { folder, selectedFolder, selectFolder } = useFolders(localFolder, localSelectedFolder);
   const DeleteCompleted = () => {
     deleteTask("DELETE_COMPLETED");
   };
@@ -160,8 +148,17 @@ function App() {
 
   //
 
+  const toggle = () => {
+    document.getElementById("FolderList").classList.remove("toggle");
+    document.getElementById("AddTask").classList.remove("toggle");
+    document.body.classList.remove("toggle");
+    document.body.classList.remove("overlay");
+  };
+
   return (
     <div className="app">
+      <div id="overlay" onClick={() => toggle()}></div>
+
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={selectedFolder} task={task} completed_tasks={completed_tasks} />
 
@@ -175,7 +172,8 @@ function App() {
         onDelete={() => deleteTask("DELETE_TASK")}
       />
 
-      <AddTask onSubmit={(e) => addTask(e, selectedFolder.id)} folder={selectedFolder} />
+      <AddTask onSubmit={(titleInput) => addTask(titleInput, selectedFolder.id)} folder={selectedFolder} />
+
       {folder_task[0] ? (
         <AllTasks
           task={task}

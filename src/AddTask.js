@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 
-function AddTask({ onSubmit, title, folder }) {
+const useForm = () => {
+  const [titleInput, setTitleInput] = useState("");
+
+  const onChange = (value) => {
+    setTitleInput(value);
+  };
+
+  return { titleInput, onChange };
+};
+
+function AddTask({ onSubmit, folder }) {
+  const { titleInput, onChange } = useForm();
+
+  const submit = (e) => {
+    onSubmit(titleInput);
+    onChange("");
+    e.preventDefault();
+  };
+
   return (
-    <form className="AddTask" onSubmit={onSubmit}>
-      <div className="navbar">
-        <img onClick={() => document.body.classList.remove("toggle")} src="../arrow_back-24px.svg" alt="" />
-        <h1>Agregar tarea</h1>
-        <img src="../tune-24px.svg" alt="fakealt" />
-      </div>
+    <form id="AddTask" onSubmit={(e) => submit(e)}>
+      <h1>Agregar tarea</h1>
 
       <p>Carpeta: {folder.name}</p>
-      <input onChange={(e) => (title = e.target.value)} type="text" placeholder="Título"></input>
+      <input id="titleInput" value={titleInput} onChange={(e) => onChange(e.target.value)} type="text" placeholder="Título" autoComplete="off"></input>
       <textarea id="form-description" placeholder="Descripción"></textarea>
       <input type="submit" id="cuack" value="Agregar Tarea"></input>
     </form>

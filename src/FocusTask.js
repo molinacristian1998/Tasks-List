@@ -1,7 +1,7 @@
 import React from "react";
 
 function FocusTask({ open, allfolder, onBack, onDelete, onTitleChange }) {
-  var { id, title, description, completed, folder } = open;
+  var { id, title, completed, folder } = open;
 
   const filterFolder = (f, a) => {
     let filtered = a.filter((x) => x.id === f);
@@ -11,10 +11,6 @@ function FocusTask({ open, allfolder, onBack, onDelete, onTitleChange }) {
   if (folder) {
     var folderName = filterFolder(folder, allfolder).name;
   }
-
-  const changeTitle = (e) => {
-    onTitleChange(e, id);
-  };
 
   return (
     <div id="FocusTask" className={id ? "toggle" : ""}>
@@ -28,10 +24,9 @@ function FocusTask({ open, allfolder, onBack, onDelete, onTitleChange }) {
       </div>
 
       <div className="text">
-        <input type="text" value={title} onChange={(e) => changeTitle(e.target.value)} />
+        <input id="Rename-Input" type="text" value={title} onChange={(e) => onTitleChange(e.target.value, id)} />
         <p>Carpeta: {folder ? folderName : "Sin carpeta"}</p>
 
-        <p>{description}</p>
         <p>{completed ? "completado" : "incompleto"}</p>
       </div>
     </div>

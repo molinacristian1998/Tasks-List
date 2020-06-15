@@ -1,5 +1,6 @@
 $main-color: #1b4f72;
-$lighter-main: #1f618d;
+$light-main: #1f618d;
+$lighter-main: #d4e6f1;
 
 $border-radius: 8px;
 
@@ -17,7 +18,7 @@ $border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: $lighter-main;
+  background-color: $light-main;
 
   button {
     margin: 10px;
@@ -66,7 +67,7 @@ div.Task img.completed {
   filter: invert(37%) sepia(74%) saturate(434%) hue-rotate(93deg) brightness(94%) contrast(93%);
 }
 
-.AddTask {
+#AddTask {
   background: white;
   z-index: 40;
   position: fixed;
@@ -82,27 +83,15 @@ div.Task img.completed {
   box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.8);
   transition: 0.4s;
 
-  .navbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    padding-top: 8px;
-    box-sizing: border-box;
+  h1 {
+    margin: 0;
+    font-size: 1.4em;
+    text-align: center;
+  }
 
-    h1 {
-      margin: 0;
-      font-size: 1.4em;
-      padding-bottom: 8px;
-    }
-
-    img {
-      margin: 0;
-    }
+  p {
+    margin-top: 6px;
+    text-align: center;
   }
 
   input,
@@ -123,8 +112,14 @@ div.Task img.completed {
   }
 
   input[type="submit"] {
-    background: #3498db;
+    background: $light-main;
+
     color: white;
+    cursor: pointer;
+
+    &:hover {
+      background: $main-color;
+    }
   }
 }
 
@@ -230,8 +225,14 @@ body {
 
   padding-bottom: 76px;
 
+  &.overlay {
+    #overlay {
+      display: block;
+    }
+  }
+
   &.toggle {
-    .AddTask {
+    #AddTask {
       margin-bottom: 0;
     }
   }
@@ -257,6 +258,7 @@ div.app {
     -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
     -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
 
     img {
       filter: invert(100%);
@@ -315,6 +317,8 @@ div.Task {
     margin-left: 0;
     margin-right: 16px;
     filter: invert(60%);
+    cursor: pointer;
+    user-select: none;
   }
 }
 
@@ -358,14 +362,12 @@ div.Task {
   .text {
     padding: 16px;
 
-    h1 {
-      font-size: 1.4em;
-    }
-
     input {
       border: none;
-      font-size: 1.6em;
+      font-size: 1.1em;
+      min-width: 100%;
       font-weight: bold;
+      text-overflow: ellipsis;
 
       &:focus {
         outline: 0;
@@ -476,20 +478,21 @@ body.menu aside#aside-menu {
 
   &.toggle {
     margin-bottom: 0;
-
-    & + #overlay {
-      display: block !important;
-    }
   }
 
   div {
     padding: 8px;
     border-radius: 8px;
     text-align: center;
+    cursor: pointer;
+
+    &:hover {
+      background: $lighter-main;
+    }
 
     &.selected {
-      color: #154360;
-      background: #ebf5fb;
+      color: $light-main;
+      background: $lighter-main;
     }
 
     &.NewFolder {

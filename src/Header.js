@@ -5,11 +5,14 @@ var d = new Date();
 var months = ["Ene", "Feb", "Marzo", "Abril", "Mayo", "Jun", "Jul", "Agos", "Sept", "Oct", "Nov", "Dic"];
 var date = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 
+var hour = d.getHours();
+const dayTime = ["noon", "afternoon", "afternoon", "afternoon", "afternoon", "evening(5)"];
+
+var user = "Cristian";
+
+console.log("Mensaje de prueba: Good " + dayTime[hour] + ", " + user);
+
 function Header({ folder, task, completed_tasks }) {
-  //
-
-  console.log(completed_tasks);
-
   const filterByFolder = (task) => ({ id }) => {
     let filtered = task.filter((x) => x.folder === id);
     return filtered;
@@ -24,12 +27,14 @@ function Header({ folder, task, completed_tasks }) {
       <h1>{folder.name}</h1>
       <p className="date">{date}</p>
       <div className="info">
-        <p className="percent">
-          {completed_tasks.length} de {task.length} tareas completadas
+        <div className="percent">
+          <p>
+            {completed_tasks.length} de {task.length} tareas completadas
+          </p>
           <div id="completed-bar">
             <span style={{ width: percent + "%" }}></span>
           </div>
-        </p>
+        </div>
       </div>
     </div>
   );

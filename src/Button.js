@@ -4,6 +4,8 @@ const switchFunct = (expr) => {
   switch (expr) {
     case "toggleAdd":
       document.body.classList.add("toggle");
+      document.body.classList.add("overlay");
+      document.getElementById("titleInput").focus();
       break;
     default:
       console.err("switch Error");
