@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import Button from "./Button";
 import Header from "./Header";
 import AddTask from "./AddTask";
 import AllTasks from "./AllTasks";
 import FocusTask from "./FocusTask";
 import FolderList from "./FolderList";
-import Button from "./Button";
+import BottomBar from "./BottomBar";
 import "./master.min.css";
 
 const useFolders = (localFolders) => {
@@ -18,6 +19,7 @@ const useFolders = (localFolders) => {
     setSelectedFolder(toObject);
     document.getElementById("FolderList").classList.remove("toggle");
   };
+
   return { folder, selectedFolder, selectFolder };
 };
 
@@ -127,7 +129,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("useEffect");
     localStorage.setItem("tasks", JSON.stringify(task));
   });
 
@@ -143,14 +144,8 @@ function App() {
 
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
   const { folder, selectedFolder, selectFolder } = useFolders(localFolder);
-  var completed_tasks = Object.values(task).filter((x) => x.completed === true && x.folder === selectedFolder.id);
-
   const DeleteCompleted = () => {
     deleteTask("DELETE_COMPLETED");
-  };
-
-  const deleteThis = () => {
-    deleteTask("DELETE_TASK");
   };
 
   //
@@ -160,6 +155,8 @@ function App() {
     return filtered;
   };
   const folder_task = filterByFolder(task)(selectedFolder);
+
+  var completed_tasks = Object.values(folder_task).filter((x) => x.completed === true);
 
   //
 
@@ -175,7 +172,7 @@ function App() {
         allfolder={folder}
         onBack={() => closeTask()}
         onTitleChange={(value, id) => renameTitle(value, id)}
-        onDelete={() => deleteThis()}
+        onDelete={() => deleteTask("DELETE_TASK")}
       />
 
       <AddTask onSubmit={(e) => addTask(e, selectedFolder.id)} folder={selectedFolder} />
@@ -193,10 +190,12 @@ function App() {
       ) : (
         <div className="noTasks">
           <h1>Todavía no hay tareas</h1>
-          <p>¿Qué esperas para agregar una? La puta que te parió.</p>
+          <p>¿Qué esperas para agregar una? ;D.</p>
           <img src="../assets/img/blank_canvas.svg" alt="No tasks illustration" />
         </div>
       )}
+
+      <BottomBar folder={selectedFolder} />
     </div>
   );
 }

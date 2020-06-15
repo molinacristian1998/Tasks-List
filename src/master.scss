@@ -1,6 +1,48 @@
 $main-color: #1b4f72;
+$lighter-main: #1f618d;
 
 $border-radius: 8px;
+
+* {
+  outline: none;
+}
+
+.BottomBar {
+  background: orange;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $lighter-main;
+
+  button {
+    margin: 10px;
+    border: none;
+    background-color: transparent;
+    height: 34px;
+    width: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $main-color;
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+      filter: invert(100%);
+    }
+  }
+}
 
 .noTasks {
   padding: 24px;
@@ -24,7 +66,7 @@ div.Task img.completed {
   filter: invert(37%) sepia(74%) saturate(434%) hue-rotate(93deg) brightness(94%) contrast(93%);
 }
 
-.addNew {
+.AddTask {
   background: white;
   z-index: 40;
   position: fixed;
@@ -186,8 +228,10 @@ body {
   background: white;
   overflow-y: scroll;
 
+  padding-bottom: 76px;
+
   &.toggle {
-    .addNew {
+    .AddTask {
       margin-bottom: 0;
     }
   }
@@ -206,9 +250,9 @@ div.app {
     border: none;
     margin: 0;
     position: fixed;
-    bottom: 12px;
+    bottom: 56px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 50%);
     z-index: 10;
     -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
     -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);

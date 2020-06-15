@@ -2,7 +2,7 @@ import React from "react";
 
 function AddTask({ onSubmit, title, folder }) {
   return (
-    <form className="addNew" onSubmit={onSubmit}>
+    <form className="AddTask" onSubmit={onSubmit}>
       <div className="navbar">
         <img onClick={() => document.body.classList.remove("toggle")} src="../arrow_back-24px.svg" alt="" />
         <h1>Agregar tarea</h1>
