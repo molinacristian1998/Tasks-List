@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+import React from "react";
 
 const switchFunct = (expr) => {
   switch (expr) {
     case "toggleAdd":
-      document.body.classList.add("toggle");
-      document.body.classList.add("overlay");
+      document.getElementById("AddTask").classList.add("toggle");
+      document.getElementById("overlay").classList.add("toggle");
       document.getElementById("titleInput").focus();
       break;
     default:
@@ -14,13 +13,9 @@ const switchFunct = (expr) => {
 };
 
 const Button = ({ action, image, type }) => {
-  const theme = useContext(ThemeContext);
-
-  console.log(theme);
-
   return (
     <div>
-      <button className={type} onClick={() => switchFunct(action)} style={{ background: theme.darkermain }}>
+      <button className={type} onClick={() => switchFunct(action)}>
         <img src={image} alt="icon" />
       </button>
     </div>

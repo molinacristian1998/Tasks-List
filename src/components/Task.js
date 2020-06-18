@@ -1,11 +1,6 @@
-import React, { useContext } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+import React from "react";
 
 function Task({ id, info, onOpen, onComplete }) {
-  const theme = useContext(ThemeContext);
-
-  console.log(theme);
-
   return (
     <div id={id} className="Task">
       <img
@@ -15,7 +10,7 @@ function Task({ id, info, onOpen, onComplete }) {
         alt="icon"
       />
       <div onClick={(e) => onOpen(id)}>
-        <p style={{ color: theme.text }}>{info.title}</p>
+        <p>{info.title}</p>
       </div>
     </div>
   );

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Button from "./Button";
-import Header from "./Header";
-import AddTask from "./AddTask";
-import AllTasks from "./AllTasks";
-import FocusTask from "./FocusTask";
-import FolderList from "./FolderList";
-import BottomBar from "./BottomBar";
+import Button from "./components/Button";
+import Header from "./components/Header";
+import AddTask from "./components/AddTask";
+import AllTasks from "./components/AllTasks";
+import FocusTask from "./components/FocusTask";
+import FolderList from "./components/FolderList";
+import BottomBar from "./components/BottomBar";
 import "./master.min.css";
 
-//
-
 // Functions
+
 // const compose = (...fns) => (x) => fns.reduceRight((y, f) => f(y), x);
 const composeById = (...fns) => (x, id) => fns.reduceRight((y, f) => f(y, id), x);
 const removeFromArray = (x, id) => Object.values(x).filter((x) => x.id !== id);
@@ -21,9 +20,7 @@ const toString = (x) => JSON.stringify(x);
 const toLocal = (name, x) => localStorage.setItem(name, x);
 
 const toggle = (elem) => (action) => {
-  elem === "body" ? (elem = document.body.classList) : (elem = document.getElementById(elem).classList);
-  elem.contains("toggle") ? elem.remove("toggle") : elem.add("toggle");
-
+  elem = document.getElementById(elem).classList;
   switch (action) {
     case "ADD":
       elem.add("toggle");
@@ -52,7 +49,6 @@ const useFolders = (localFolders, localSelectedFolder) => {
   const selectFolder = (id) => {
     id = Number(id);
     composeById(setSelectedFolder, selectHead, selectFromArray)(folder, id);
-
     toggle("FolderList")("REMOVE");
     toggle("overlay")("REMOVE");
   };
@@ -66,7 +62,6 @@ const useTasks = (tasks) => {
 
   const addTask = (values) => {
     //composeById(setTask, concat, newTask)(task, values);
-
     setTask(concat(task, newTask(values)));
     toggle("AddTask")("REMOVE");
     toggle("overlay")("REMOVE");

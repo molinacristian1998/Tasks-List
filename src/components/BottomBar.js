@@ -1,19 +1,15 @@
-import React, { useContext } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+import React from "react";
 
 function BottomBar({ folder, task, completed_tasks }) {
-  const theme = useContext(ThemeContext);
-  console.log(theme);
-
   const showFList = () => {
     document.getElementById("FolderList").classList.add("toggle");
-    document.body.classList.add("overlay");
+    document.getElementById("overlay").classList.add("toggle");
   };
 
   return (
-    <div className="BottomBar" style={{ background: theme.main }}>
+    <div className="BottomBar">
       <button onClick={() => showFList()}>
-        <img style={{ "&:hover": { background: theme.darkermain } }} src="../assets/icons/menu-24px.svg" alt="" />
+        <img src="../assets/icons/menu-24px.svg" alt="" />
       </button>
       <button onClick={() => document.body.classList.remove("toggle")}>
         <img src="../assets/icons/home-24px.svg" alt="" />
