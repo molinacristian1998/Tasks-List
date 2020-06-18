@@ -8,17 +8,53 @@ import FolderList from "./FolderList";
 import BottomBar from "./BottomBar";
 import "./master.min.css";
 
+//
+
+// Functions
+// const compose = (...fns) => (x) => fns.reduceRight((y, f) => f(y), x);
+const composeById = (...fns) => (x, id) => fns.reduceRight((y, f) => f(y, id), x);
+const removeFromArray = (x, id) => Object.values(x).filter((x) => x.id !== id);
+const selectHead = (x) => x[0];
+const selectFromArray = (x, id) => Object.values(x).filter((x) => x.id === id);
+const concat = (x, y) => x.concat(y);
+const toString = (x) => JSON.stringify(x);
+const toLocal = (name, x) => localStorage.setItem(name, x);
+
+const toggle = (elem) => (action) => {
+  elem === "body" ? (elem = document.body.classList) : (elem = document.getElementById(elem).classList);
+  elem.contains("toggle") ? elem.remove("toggle") : elem.add("toggle");
+
+  switch (action) {
+    case "ADD":
+      elem.add("toggle");
+      break;
+    case "REMOVE":
+      elem.remove("toggle");
+      break;
+    case "TOGGLE":
+      elem.contains("toggle") ? elem.remove("toggle") : elem.add("toggle");
+      break;
+    default:
+      console.warn("No se seleccionó case");
+  }
+};
+
+const newTask = ({ title, folder }) => {
+  return { id: Date.now(), title: title, completed: false, folder: folder };
+};
+
+//
+
 const useFolders = (localFolders, localSelectedFolder) => {
   const [folder /*, setFolder*/] = useState(localFolders);
   const [selectedFolder, setSelectedFolder] = useState(localSelectedFolder);
 
-  const selectFolder = (e) => {
-    let id = Number(e.target.id);
-    let filtered = folder.filter((x) => x.id === id);
-    let toObject = filtered[0];
-    setSelectedFolder(toObject);
-    document.getElementById("FolderList").classList.remove("toggle");
-    document.body.classList.remove("overlay");
+  const selectFolder = (id) => {
+    id = Number(id);
+    composeById(setSelectedFolder, selectHead, selectFromArray)(folder, id);
+
+    toggle("FolderList")("REMOVE");
+    toggle("overlay")("REMOVE");
   };
 
   return { folder, selectedFolder, selectFolder };
@@ -28,11 +64,12 @@ const useTasks = (tasks) => {
   const [task, setTask] = useState(tasks);
   const [open, setOpen] = useState(0);
 
-  const addTask = (titleInput, folder) => {
-    let title = titleInput;
-    createTask(title, task, setTask, folder);
-    document.body.classList.remove("toggle");
-    document.body.classList.remove("overlay");
+  const addTask = (values) => {
+    //composeById(setTask, concat, newTask)(task, values);
+
+    setTask(concat(task, newTask(values)));
+    toggle("AddTask")("REMOVE");
+    toggle("overlay")("REMOVE");
   };
 
   const completeTask = (id) => {
@@ -41,23 +78,27 @@ const useTasks = (tasks) => {
       if (task.id === slctId) {
         task.completed = !task.completed;
       }
+
       return task;
     };
-    let completed = task.map((task) => handleComplete(task, id));
+
+    const taskMap = (x, id) => x.map((x) => handleComplete(x, id));
+
+    let completed = taskMap(task, id);
+
     setTask(completed);
   };
 
-  const deleteTask = (dltCase) => {
+  const deleteTask = (dltCase, selectedFolder) => {
     switch (dltCase) {
       case "DELETE_TASK":
-        let filtered = task.filter((x) => x.id !== open.id);
-        setTask(filtered);
+        composeById(setTask, removeFromArray)(task, open.id);
         setOpen(0);
         break;
       case "DELETE_COMPLETED":
-        let result = task.filter((x) => x.completed === false);
+        let result = task.filter((x) => x.completed === false && task.folder !== selectedFolder.id);
         setTask(result);
-        localStorage.setItem("tasks", JSON.stringify(result));
+        localStorage.setItem("tasks", toString(result));
         break;
       default:
         console.warn("No se seleccionó case");
@@ -65,15 +106,11 @@ const useTasks = (tasks) => {
   };
 
   const openTask = (id) => {
-    let oneTask = Object.values(task).filter((x) => x.id === id);
-    oneTask = oneTask[0];
-    setOpen(oneTask);
+    composeById(setOpen, selectHead, selectFromArray)(task, id);
     document.getElementById("Rename-Input").focus();
   };
 
-  const closeTask = () => {
-    setOpen(0);
-  };
+  const closeTask = () => setOpen(0);
 
   const renameTitle = (value, id) => {
     const mapTitle = (task, value, id) => {
@@ -93,17 +130,6 @@ const useTasks = (tasks) => {
 
 //
 
-const createTask = (title, task, setTask, folder) => {
-  let newTask = {
-    id: Date.now(),
-    title: title,
-    completed: false,
-    folder: folder,
-  };
-  let concat = task.concat(newTask);
-  setTask(concat);
-};
-
 //
 
 //
@@ -115,49 +141,48 @@ function App() {
   };
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(task));
-    localStorage.setItem("selectedFolder", JSON.stringify(selectedFolder));
+    toLocal("tasks", toString(task));
+    toLocal("selectedFolder", toString(selectedFolder));
   });
 
-  var localTask = JSON.parse(localStorage.getItem("tasks"));
-  var localFolder = JSON.parse(localStorage.getItem("folder"));
-  var localSelectedFolder = JSON.parse(localStorage.getItem("selectedFolder"));
+  const parseLocal = (x) => JSON.parse(localStorage.getItem(x));
+
+  var localTask = parseLocal("tasks");
+  var localFolder = parseLocal("folder");
+  var localSelectedFolder = parseLocal("selectedFolder");
 
   if (!localTask) {
-    localStorage.setItem("tasks", JSON.stringify(initialState.tasks));
+    toLocal("tasks", toString(initialState.tasks));
   }
   if (!localFolder) {
-    localStorage.setItem("folder", JSON.stringify(initialState.folder));
+    toLocal("folder", toString(initialState.folder));
   }
 
   const { task, open, addTask, deleteTask, completeTask, openTask, closeTask, renameTitle } = useTasks(localTask);
   const { folder, selectedFolder, selectFolder } = useFolders(localFolder, localSelectedFolder);
   const DeleteCompleted = () => {
-    deleteTask("DELETE_COMPLETED");
+    deleteTask("DELETE_COMPLETED", selectedFolder);
   };
 
   //
 
-  const filterByFolder = (task) => ({ id }) => {
-    let filtered = task.filter((x) => x.folder === id);
-    return filtered;
-  };
+  const filterByFolder = (task) => ({ id }) => task.filter((x) => x.folder === id);
+
   const folder_task = filterByFolder(task)(selectedFolder);
 
   var completed_tasks = Object.values(folder_task).filter((x) => x.completed === true);
 
   //
 
-  const toggle = () => {
-    document.getElementById("FolderList").classList.remove("toggle");
-    document.getElementById("AddTask").classList.remove("toggle");
-    document.body.classList.remove("toggle");
-    document.body.classList.remove("overlay");
+  const toggleAll = () => {
+    toggle("FolderList")("REMOVE");
+    toggle("AddTask")("REMOVE");
+    toggle("overlay")("REMOVE");
   };
 
   return (
     <div className="app">
-      <div id="overlay" onClick={() => toggle()}></div>
+      <div id="overlay" onClick={() => toggleAll()}></div>
 
       <Button action="toggleAdd" image="../add-24px.svg" type="add" />
       <Header folder={selectedFolder} task={task} completed_tasks={completed_tasks} />
@@ -172,7 +197,7 @@ function App() {
         onDelete={() => deleteTask("DELETE_TASK")}
       />
 
-      <AddTask onSubmit={(titleInput) => addTask(titleInput, selectedFolder.id)} folder={selectedFolder} />
+      <AddTask onSubmit={(titleInput) => addTask({ title: titleInput, folder: selectedFolder.id })} folder={selectedFolder} />
 
       {folder_task[0] ? (
         <AllTasks
